@@ -1,5 +1,6 @@
 
 
+
 // TODO LIST
 // check add input lines to latch to "see" open/closed status physically, since can change assynchronously from a) toggle, and b) reflex circuit
 // add input line to reflex input to "see"
@@ -16,7 +17,6 @@
 #include <SPI.h>
 
 //#define DEBUG
-#define COMM_DELAY
 
 /* are these used? Needed? */
 #define CLOS "CLOSE"
@@ -31,16 +31,17 @@ const unsigned long enable_delay = 30;
 const unsigned long cs_delay = 30;
 
 
-const int ENABLE_0_PIN = 8;
-const int ENABLE_1_PIN = 7;
+const int ENABLE_DEWAR_ADC_PIN = 6;
+const int ENABLE_SHUTTER_ADC_PIN = 5;
 
 const int SENSOR_TRIGGERING_PIN = 3;
 
-const int SHUTTER_STATUS_PIN = 4; //TODO: wire up
+const int SHUTTER_STATUS_PIN = 2; //TODO: wire up
+const int REFLEX_FAULT = 3; // put ISR on rising edge to set fault flag
 
 //TODO: Wire these up
-#define SHUTTER_OPEN_PIN 6
-#define SHUTTER_CLOSE_PIN 5
+#define SHUTTER_OPEN_PIN 7
+#define SHUTTER_CLOSE_PIN 8
 
 // SPI chip select line
 #define CS 10
@@ -49,31 +50,37 @@ int bufPos = 0;
 char buf[256];
 
 // raw data from first ADC
-unsigned int adc_data_0[] = {
+unsigned int adc_data_dewar[] = {
   0, 0, 0, 0, 0, 0, 0, 0
 };
 
 // raw data from second ADC
-unsigned int adc_data_1[] = {
+unsigned int adc_data_shutter[] = {
   0, 0, 0, 0, 0, 0, 0, 0
 };
 
 
-boolean is_fault = false;
+volatile boolean fault_flag = false;
 
-unsigned int adc_at_fault[] = {
+/*
+  unsigned int adc_at_fault[] = {
   0, 0, 0, 0, 0, 0, 0, 0
-};
+  };
+*/
 
 
 
-
+// fault ISR for reflex circuit
+void reflex_fault()
+{
+  fault_flag = true;
+}
 
 
 
 void do_close()
 {
-
+  // low going pulse. Add delays around low if required (unlikely).
   digitalWrite(SHUTTER_CLOSE_PIN, HIGH);
   digitalWrite(SHUTTER_CLOSE_PIN, LOW);
   digitalWrite(SHUTTER_CLOSE_PIN, HIGH);
@@ -82,7 +89,9 @@ void do_close()
 
 void do_open()
 {
-  if (!isTriggering())
+  // low going pulse. Add delays around low if required (unlikely).
+  /*  if (!isTriggering()) */
+  if (fault_flag == false)
   {
     digitalWrite(SHUTTER_OPEN_PIN, HIGH);
     digitalWrite(SHUTTER_OPEN_PIN, LOW);
@@ -99,6 +108,7 @@ void setup() {
   digitalWrite(13, HIGH);
 
   //initialize pins
+  pinMode(SHUTTER_STATUS_PIN, INPUT);
   pinMode(SENSOR_TRIGGERING_PIN, INPUT);
 
   digitalWrite(SHUTTER_OPEN_PIN, HIGH);
@@ -111,22 +121,25 @@ void setup() {
   digitalWrite(SHUTTER_CLOSE_PIN, HIGH);
 
   // enable line for the first ADC
-  digitalWrite(ENABLE_0_PIN, HIGH);
-  pinMode(ENABLE_0_PIN, OUTPUT);
+  digitalWrite(ENABLE_DEWAR_ADC_PIN, HIGH);
+  pinMode(ENABLE_DEWAR_ADC_PIN, OUTPUT);
 
   // enable line for the second ADC
-  digitalWrite(ENABLE_1_PIN, HIGH);
-  pinMode(ENABLE_1_PIN, OUTPUT);
+  digitalWrite(ENABLE_SHUTTER_ADC_PIN, HIGH);
+  pinMode(ENABLE_SHUTTER_ADC_PIN, OUTPUT);
+
+  // initialize falling edge interrupt on pin 3
+  attachInterrupt(digitalPinToInterrupt(3), reflex_fault, FALLING);
 
   // for debugging
   /*
-  for (int i = 0; i < 8; i++)
-  {
-    digitalWrite(ENABLE_1_PIN, HIGH);
+    for (int i = 0; i < 8; i++)
+    {
+    digitalWrite(ENABLE_SHUTTER_ADC_PIN, HIGH);
     delay(1000);
-    digitalWrite(ENABLE_1_PIN, LOW);
+    digitalWrite(ENABLE_SHUTTER_ADC_PIN, LOW);
     delay(1000);
-  }
+    }
   */
 
   // set CS to high
@@ -154,32 +167,20 @@ void loop() {
   if (millis() > sample_time)
   {
     sample_time += adc_interval; //sample at set interval period
-    do_ADC();
+    //do_ADC();
   }
 }
 
-void do_ADC()
-{
-  // there are two ADC boards. The code is similar, except for the enable pin.
-  // TODO: add enable pin number to argument, and combine read_first_adc and read_second_adc
-  // ***
-digitalWrite(ENABLE_0_PIN, HIGH);
-digitalWrite(ENABLE_1_PIN, HIGH);
-  
-  //read_ADC(ENABLE_0_PIN, B1111);
-  // read second ADC
-  read_ADC(ENABLE_1_PIN, B1111);
 
-  // TODO: process needs to work on both raw adc data arrays
-  processADC();
-}
 
-void read_ADC (int enable_pin, byte mask)
+void readDewarADC()
 {
+  int enable_pin = ENABLE_DEWAR_ADC_PIN;
+  byte mask = B1111;
+
   digitalWrite(enable_pin, LOW);
-#ifdef COMM_DELAY
-  delay(enable_delay);
-#endif
+  if (enable_delay > 0)
+    delay(enable_delay);
   unsigned int val = 0;
 
   for (int i = 0; i < 8; i++)
@@ -188,10 +189,9 @@ void read_ADC (int enable_pin, byte mask)
     if (mask & (1 << i / 2))
     {
       digitalWrite(CS, LOW);
-#ifdef COMM_DELAY
-      delay(cs_delay);
-#endif
-      SPI.setClockDivider(SPI_CLOCK_DIV128);
+      if (cs_delay > 0)
+        delay(cs_delay);
+      //SPI.setClockDivider(SPI_CLOCK_DIV128);
 
       SPI.transfer(B00000001);
       int y = SPI.transfer(B10000000 + (i << 4));
@@ -214,7 +214,7 @@ void read_ADC (int enable_pin, byte mask)
       }
     }
 
-    adc_data_0[i] = val;
+    adc_data_dewar[i] = val;
 
 #ifdef DEBUG
     Serial.println(val);
@@ -228,26 +228,90 @@ void read_ADC (int enable_pin, byte mask)
 
 }
 
+void readShutterADC()
+{
+  int enable_pin = ENABLE_SHUTTER_ADC_PIN;
+  byte mask = B0001;
+
+  digitalWrite(enable_pin, LOW);
+  if (enable_delay > 0)
+    delay(enable_delay);
+  unsigned int val = 0;
+
+  for (int i = 0; i < 8; i++)
+  {
+    // will mask i/2 and i/2+1 due to integral arithmetic
+    if (mask & (1 << i / 2))
+    {
+      digitalWrite(CS, LOW);
+      if (cs_delay > 0)
+        delay(cs_delay);
+      //SPI.setClockDivider(SPI_CLOCK_DIV128);
+
+      SPI.transfer(B00000001);
+      int y = SPI.transfer(B10000000 + (i << 4));
+      int x = SPI.transfer(0x00);
+
+      digitalWrite(CS, HIGH);
+
+      y &= B00000011;
+      val = (y << 8) + x;
+    }
+    else // if masked out, set the reading to 0, and the threshold to 255
+    {
+      if (i % 2 == 0)
+      {
+        val = 2048;
+      }
+      else
+      {
+        val = 2048; // max value is 1023. Using 255 as an easy to see "special" value indicating that the sensor is offline
+      }
+    }
+
+    adc_data_shutter[i] = val;
+  }
+  digitalWrite(enable_pin, HIGH);
+
+}
+
+void doDewarADC()
+{
+  digitalWrite(ENABLE_DEWAR_ADC_PIN, HIGH); // pull enable on differential driver chips down
+  readDewarADC();    // send I2C command to read ADCs
+  faultOnDewarADC();                        // set fault true and close shutter
+}
+
+void doShutterADC()
+{
+  digitalWrite(ENABLE_DEWAR_ADC_PIN, HIGH); // pull enable on differential driver chips down
+  readShutterADC();    // send I2C command to read ADCs
+  //faultOnShutterADC();                        // set fault true and close shutter
+}
+
+
 // shuts the shutter if the ADC value is above the threshold value.
 // this is a "backup" for the reflex circuit
 // used a 0 to 4 loop, which I like better than the 0 to 8 loop in read_first_adc
 // TODO: process needs to work on both raw adc data arrays
 
-void processADC()
+void faultOnDewarADC()
 {
   // process first ADC
   for (int i = 0; i < 4; i++)
   {
-    if (adc_data_0[2 * i] > adc_data_0[2 * i + 1])
+    if (adc_data_dewar[2 * i] > adc_data_dewar[2 * i + 1])
     {
-      is_fault = true;
+      fault_flag = true;
       //Serial.println("faulting!!");
       do_close();
     }
-    for (int j = 0; j < 8; j++)
-    {
+    /*
+      for (int j = 0; j < 8; j++)
+      {
       adc_at_fault[j] = adc_data_0[j];
-    }
+      }
+    */
   }
 
   // process second ADC goes here
@@ -314,18 +378,18 @@ void processCommand()
   }
   else if (strncmp(buf, "STATUS", strlen(buf)) == 0)
   {
-#ifdef DEBUG
-    Serial.println("# saw STATUS: ");
-#endif
-    do_ADC();
-    print_status();
+
+    doDewarADC();
+    doShutterADC();
+    printStatus();
 
   }
-  else if (strncmp(buf, "FAULT", strlen(buf)) == 0)
-  {
+  /*
+    else if (strncmp(buf, "FAULT", strlen(buf)) == 0)
+    {
     Serial.println("#Saw FAULT");
-    Serial.println(is_fault);
-    if (is_fault)
+    Serial.println(fault_flag);
+    if (fault_flag)
     {
       for (int i = 0; i < 8; i++)
       {
@@ -334,12 +398,32 @@ void processCommand()
       }
       Serial.println();
     }
-  }
+    }
+  */
   else if (strncmp(buf, "CLEAR", strlen(buf)) == 0)
   {
     Serial.println("#Saw CLEAR");
     Serial.println("#clearing fault");
-    is_fault = false;
+    fault_flag = false;
+  }
+  else if (strncmp(buf, "DEWAR", strlen(buf)) == 0)
+  {
+    Serial.print("#Saw ");
+    Serial.print(buf);
+    Serial.print(" -> ");
+    Serial.println("DEWAR");
+    doDewarADC();
+    printDewarStatus();
+
+  }
+  else if (strncmp(buf, "SHUTTER", strlen(buf)) == 0)
+  {
+    Serial.print("#Saw ");
+    Serial.print(buf);
+    Serial.print(" -> ");
+    Serial.println("SHUTTER");
+    doShutterADC();
+    printShutterStatus();
   }
   else if (strncmp(buf, "HELP", strlen(buf)) == 0)
   {
@@ -357,8 +441,9 @@ void processCommand()
   }
 }
 
-boolean isTriggering()
-{
+/*
+  boolean isTriggering()
+  {
   boolean x = digitalRead(SENSOR_TRIGGERING_PIN);
   if (x)
   {
@@ -368,25 +453,56 @@ boolean isTriggering()
   {
     return true;
   }
-}
+  }
+*/
 
 
-void print_status()
+void printDewarStatus()
 {
-  Serial.println("# first bit is closed?, is_triggering, is fault?, next eight are [light_level, threshold] ADC values: ");
-  boolean is_closed = digitalRead(SHUTTER_STATUS_PIN);
-  //xxx
-  Serial.print(is_closed);
-  Serial.print(",");
-  Serial.print(isTriggering());
-  Serial.print(",");
-  Serial.print(is_fault);
-
   for (int i = 0; i < 8; i++)
   {
-    Serial.print(",");
-    Serial.print(adc_data_0[i]);
+    if (i > 0)
+      Serial.print(",");
+    Serial.print(adc_data_dewar[i]);
   }
+  Serial.println();
+}
+
+void printShutterStatus()
+{
+  for (int i = 0; i < 2; i++)
+  {
+    if (i > 0)
+      Serial.print(",");
+    Serial.print(adc_data_shutter[i]);
+  }
+  Serial.println();
+}
+
+void printStatus()
+{
+ boolean is_closed = digitalRead(SHUTTER_STATUS_PIN);
+  Serial.print(is_closed);
+  Serial.print(",");
+  Serial.print(fault_flag);
+  Serial.print(",");
+  
+  for (int i = 0; i < 8; i++)
+  {
+    if (i > 0)
+      Serial.print(",");
+    Serial.print(adc_data_dewar[i]);
+  }
+
+  Serial.print(",");
+
+  for (int i = 0; i < 2; i++)
+  {
+    if (i > 0)
+      Serial.print(",");
+    Serial.print(adc_data_shutter[i]);
+  }
+
   Serial.println();
 }
 
