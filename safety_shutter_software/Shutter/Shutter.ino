@@ -36,7 +36,7 @@ const int ENABLE_SHUTTER_ADC_PIN = 5;
 
 const int SENSOR_TRIGGERING_PIN = 3;
 
-const int SHUTTER_STATUS_PIN = 2; //TODO: wire up
+const int GET_SHUTTER_CLOSED_PIN = 2;
 const int REFLEX_FAULT = 3; // put ISR on rising edge to set fault flag
 
 //TODO: Wire these up
@@ -108,7 +108,7 @@ void setup() {
   digitalWrite(13, HIGH);
 
   //initialize pins
-  pinMode(SHUTTER_STATUS_PIN, INPUT);
+  pinMode(GET_SHUTTER_CLOSED_PIN, INPUT);
   pinMode(SENSOR_TRIGGERING_PIN, INPUT);
 
   digitalWrite(SHUTTER_OPEN_PIN, HIGH);
@@ -192,6 +192,7 @@ void readDewarADC()
       if (cs_delay > 0)
         delay(cs_delay);
       //SPI.setClockDivider(SPI_CLOCK_DIV128);
+      SPI.setClockDivider(SPI_CLOCK_DIV64);
 
       SPI.transfer(B00000001);
       int y = SPI.transfer(B10000000 + (i << 4));
@@ -481,12 +482,12 @@ void printShutterStatus()
 
 void printStatus()
 {
- boolean is_closed = digitalRead(SHUTTER_STATUS_PIN);
+  boolean is_closed = digitalRead(GET_SHUTTER_CLOSED_PIN);
   Serial.print(is_closed);
   Serial.print(",");
   Serial.print(fault_flag);
   Serial.print(",");
-  
+
   for (int i = 0; i < 8; i++)
   {
     if (i > 0)
