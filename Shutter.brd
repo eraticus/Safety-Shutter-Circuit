@@ -982,6 +982,9 @@ design rules under a new name.</description>
 <element name="T1" library="transistor" library_urn="urn:adsk.eagle:library:402" package="TO220" value="TIP131" x="-143.51" y="-248.92"/>
 <element name="R8" library="Stackpole" package="0805" value="1.6K" x="-156.21" y="-260.35"/>
 <element name="D3" library="adafruit" library_urn="urn:adsk.eagle:library:420" package="DO41-10" value="1N4004" x="-142.24" y="-274.32"/>
+<element name="DEWAR_SWITCH" library="OST" package="OSTVN02" value="M02" x="-144.78" y="-294.64"/>
+<element name="SHUTTER_SWITCH" library="OST" package="OSTVN02" value="M02" x="-144.78" y="-314.96"/>
+<element name="OPEN_CLOSE_TOGGLE" library="OST" package="OSTVN03" value="M03" x="-144.78" y="-335.28"/>
 </elements>
 <signals>
 <signal name="RST">
@@ -1047,7 +1050,6 @@ design rules under a new name.</description>
 <contactref element="BUFFER_OD1:IC7" pad="7"/>
 <contactref element="BUFFER_OD1:O5CAP" pad="1"/>
 <contactref element="ADC2_FAULT" pad="2"/>
-<contactref element="ADC1_FAULT" pad="2"/>
 <contactref element="V1" pad="2"/>
 <contactref element="MC7808" pad="2"/>
 <contactref element="U1" pad="1"/>
@@ -1065,6 +1067,8 @@ design rules under a new name.</description>
 <contactref element="SHUTTER_OPEN_INDICATOR" pad="2"/>
 <contactref element="SHUTTER_CLOSED_INDICATOR" pad="2"/>
 <contactref element="T1" pad="3"/>
+<contactref element="ADC1_FAULT" pad="2"/>
+<contactref element="OPEN_CLOSE_TOGGLE" pad="2"/>
 <wire x1="-95.29" y1="-138.43" x2="-97.31" y2="-154.94" width="0" layer="19" extent="1-1"/>
 <wire x1="-95.29" y1="-120.65" x2="-95.29" y2="-138.43" width="0" layer="19" extent="1-1"/>
 <wire x1="-95.29" y1="-102.87" x2="-95.29" y2="-120.65" width="0" layer="19" extent="1-1"/>
@@ -1118,6 +1122,7 @@ design rules under a new name.</description>
 <wire x1="69.85" y1="96.52" x2="63.5" y2="82.55" width="0" layer="19" extent="1-1"/>
 <wire x1="83.82" y1="27.94" x2="78.74" y2="54.61" width="0" layer="19" extent="1-1"/>
 <wire x1="61.33" y1="21.59" x2="83.82" y2="27.94" width="0" layer="19" extent="1-1"/>
+<wire x1="-144.78" y1="-335.28" x2="-140.97" y2="-255.27" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="12V">
 <contactref element="MC7812" pad="3"/>
@@ -1315,6 +1320,8 @@ design rules under a new name.</description>
 <contactref element="IC4" pad="5"/>
 <contactref element="R5" pad="1"/>
 <contactref element="BUFFER_OD1:IC7" pad="8"/>
+<contactref element="OPEN_CLOSE_TOGGLE" pad="3"/>
+<wire x1="-78.42" y1="-1.27" x2="-142.24" y2="-335.28" width="0" layer="19" extent="1-1"/>
 <wire x1="-29.21" y1="41.3766" x2="-78.42" y2="-1.27" width="0" layer="19" extent="1-1"/>
 <wire x1="29.7434" y1="21.59" x2="-29.21" y2="41.3766" width="0" layer="19" extent="1-1"/>
 </signal>
@@ -1437,16 +1444,16 @@ design rules under a new name.</description>
 <wire x1="18.3134" y1="21.59" x2="29.7434" y2="22.86" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="DEWAR_FAULT">
-<contactref element="ADC1_FAULT" pad="3"/>
-<contactref element="BUFFER_OD1:IC6" pad="1"/>
 <contactref element="U$1" pad="5"/>
-<wire x1="12.1666" y1="29.21" x2="78.74" y2="62.23" width="0" layer="19" extent="1-1"/>
-<wire x1="3.81" y1="31.75" x2="12.1666" y2="29.21" width="0" layer="19" extent="1-1"/>
+<contactref element="DEWAR_SWITCH" pad="1"/>
+<contactref element="ADC1_FAULT" pad="3"/>
+<wire x1="3.81" y1="31.75" x2="-147.32" y2="-294.64" width="0" layer="19" extent="1-1"/>
+<wire x1="78.74" y1="62.23" x2="3.81" y2="31.75" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="SHUTTER_FAULT">
+<contactref element="SHUTTER_SWITCH" pad="1"/>
 <contactref element="ADC2_FAULT" pad="3"/>
-<contactref element="BUFFER_OD1:IC6" pad="3"/>
-<wire x1="3.81" y1="20.32" x2="12.1666" y2="26.67" width="0" layer="19" extent="1-1"/>
+<wire x1="3.81" y1="20.32" x2="-147.32" y2="-314.96" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="SW">
 <contactref element="V1" pad="3"/>
@@ -1536,6 +1543,8 @@ design rules under a new name.</description>
 <contactref element="BUFFER_OD1:IC7" pad="2"/>
 <contactref element="BUFFER_OD1:IC7" pad="4"/>
 <contactref element="BUFFER_OD1:IC7" pad="6"/>
+<contactref element="OPEN_CLOSE_TOGGLE" pad="1"/>
+<wire x1="-74.61" y1="-1.27" x2="-147.32" y2="-335.28" width="0" layer="19" extent="1-1"/>
 <wire x1="-34.29" y1="41.3766" x2="-74.61" y2="-1.27" width="0" layer="19" extent="1-1"/>
 <wire x1="23.5966" y1="27.94" x2="-34.29" y2="41.3766" width="0" layer="19" extent="1-1"/>
 <wire x1="23.5966" y1="25.4" x2="23.5966" y2="27.94" width="0" layer="19" extent="1-1"/>
@@ -1562,6 +1571,16 @@ design rules under a new name.</description>
 <contactref element="T1" pad="1"/>
 <contactref element="R8" pad="1"/>
 <wire x1="-146.05" y1="-255.27" x2="-157.16" y2="-260.35" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="DEWAR_FAULT_TRIGGER">
+<contactref element="DEWAR_SWITCH" pad="2"/>
+<contactref element="BUFFER_OD1:IC6" pad="1"/>
+<wire x1="12.1666" y1="29.21" x2="-144.78" y2="-294.64" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="SHUTTER_FAULT_TRIGGER">
+<contactref element="SHUTTER_SWITCH" pad="2"/>
+<contactref element="BUFFER_OD1:IC6" pad="3"/>
+<wire x1="12.1666" y1="26.67" x2="-144.78" y2="-314.96" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 </board>

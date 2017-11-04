@@ -4300,6 +4300,10 @@ composed of two inverters</description>
 <part name="GND50" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R8" library="Stackpole" deviceset="RESISTOR" device="0805" value="1.6K"/>
 <part name="D3" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="1N4004" device=""/>
+<part name="DEWAR_SWITCH" library="OST" deviceset="M02" device=""/>
+<part name="SHUTTER_SWITCH" library="OST" deviceset="M02" device=""/>
+<part name="OPEN_CLOSE_TOGGLE" library="OST" deviceset="M03" device=""/>
+<part name="GND51" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -4376,6 +4380,10 @@ two pins?</text>
 <text x="307.34" y="93.98" size="2.54" layer="94">TRIGGER</text>
 <text x="276.86" y="66.04" size="2.54" layer="94">reevaluate size of resistor</text>
 <text x="335.28" y="78.74" size="1.778" layer="94">Used a TIP102 on board</text>
+<text x="-106.68" y="142.24" size="1.778" layer="94">Reflex Circuit.
+Connect to 2PST</text>
+<text x="-106.68" y="109.22" size="1.778" layer="94">Connect to SPDT(MOM)(MOM)
+Switch</text>
 </plain>
 <moduleinsts>
 <moduleinst name="BUFFER_OD1" module="BUFFER_OD_HEX" x="20.32" y="109.22"/>
@@ -4462,10 +4470,10 @@ two pins?</text>
 <instance part="GND47" gate="1" x="20.32" y="88.9"/>
 <instance part="ADC2" gate="G$1" x="325.12" y="167.64" rot="R180"/>
 <instance part="ADC1" gate="G$1" x="193.04" y="165.1" rot="R180"/>
-<instance part="ADC1_FAULT" gate="G$1" x="-25.4" y="132.08"/>
-<instance part="ADC2_FAULT" gate="G$1" x="-25.4" y="116.84"/>
-<instance part="GND43" gate="1" x="-15.24" y="116.84" rot="R90"/>
-<instance part="GND44" gate="1" x="-15.24" y="132.08" rot="R90"/>
+<instance part="ADC1_FAULT" gate="G$1" x="-33.02" y="137.16"/>
+<instance part="ADC2_FAULT" gate="G$1" x="-33.02" y="124.46"/>
+<instance part="GND43" gate="1" x="-17.78" y="124.46" rot="R90"/>
+<instance part="GND44" gate="1" x="-17.78" y="137.16" rot="R90"/>
 <instance part="V1" gate="G$1" x="-73.66" y="165.1"/>
 <instance part="GND37" gate="1" x="-58.42" y="160.02"/>
 <instance part="MC7808" gate="A1" x="22.86" y="167.64"/>
@@ -4501,6 +4509,10 @@ two pins?</text>
 <instance part="GND50" gate="1" x="327.66" y="71.12"/>
 <instance part="R8" gate="G$1" x="312.42" y="81.28" rot="R180"/>
 <instance part="D3" gate="1" x="332.74" y="88.9" rot="R90"/>
+<instance part="DEWAR_SWITCH" gate="G$1" x="-99.06" y="134.62"/>
+<instance part="SHUTTER_SWITCH" gate="G$1" x="-99.06" y="121.92"/>
+<instance part="OPEN_CLOSE_TOGGLE" gate="G$1" x="-99.06" y="101.6"/>
+<instance part="GND51" gate="1" x="-81.28" y="101.6" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -4698,10 +4710,7 @@ two pins?</text>
 <segment>
 <pinref part="ADC2_FAULT" gate="G$1" pin="2"/>
 <pinref part="GND43" gate="1" pin="GND"/>
-</segment>
-<segment>
-<pinref part="ADC1_FAULT" gate="G$1" pin="2"/>
-<pinref part="GND44" gate="1" pin="GND"/>
+<wire x1="-25.4" y1="124.46" x2="-20.32" y2="124.46" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="V1" gate="G$1" pin="GND"/>
@@ -4774,6 +4783,16 @@ two pins?</text>
 <segment>
 <pinref part="T1" gate="G$1" pin="E"/>
 <pinref part="GND50" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="ADC1_FAULT" gate="G$1" pin="2"/>
+<pinref part="GND44" gate="1" pin="GND"/>
+<wire x1="-25.4" y1="137.16" x2="-20.32" y2="137.16" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="OPEN_CLOSE_TOGGLE" gate="G$1" pin="2"/>
+<pinref part="GND51" gate="1" pin="GND"/>
+<wire x1="-83.82" y1="101.6" x2="-91.44" y2="101.6" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="12V" class="0">
@@ -5168,6 +5187,11 @@ two pins?</text>
 <wire x1="40.64" y1="101.6" x2="43.18" y2="101.6" width="0.1524" layer="91"/>
 <label x="43.18" y="101.6" size="1.27" layer="95" font="vector" xref="yes"/>
 </segment>
+<segment>
+<pinref part="OPEN_CLOSE_TOGGLE" gate="G$1" pin="3"/>
+<wire x1="-91.44" y1="99.06" x2="-88.9" y2="99.06" width="0.1524" layer="91"/>
+<label x="-88.9" y="99.06" size="1.27" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="MISO+1" class="0">
 <segment>
@@ -5389,23 +5413,31 @@ two pins?</text>
 </net>
 <net name="DEWAR_FAULT" class="0">
 <segment>
-<pinref part="ADC1_FAULT" gate="G$1" pin="3"/>
-<portref moduleinst="BUFFER_OD1" port="A1"/>
-<wire x1="-17.78" y1="129.54" x2="0" y2="116.84" width="0.1524" layer="91"/>
-<label x="-12.7" y="127" size="1.27" layer="95" xref="yes"/>
-</segment>
-<segment>
 <pinref part="U$1" gate="G$1" pin="PD3(INT1)"/>
 <wire x1="116.84" y1="40.64" x2="119.38" y2="40.64" width="0.1524" layer="91"/>
 <label x="121.92" y="40.64" size="1.27" layer="95" xref="yes"/>
 </segment>
+<segment>
+<pinref part="DEWAR_SWITCH" gate="G$1" pin="1"/>
+<wire x1="-91.44" y1="137.16" x2="-88.9" y2="137.16" width="0.1524" layer="91"/>
+<label x="-88.9" y="137.16" size="1.27" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="ADC1_FAULT" gate="G$1" pin="3"/>
+<wire x1="-25.4" y1="134.62" x2="-22.86" y2="134.62" width="0.1524" layer="91"/>
+<label x="-22.86" y="134.62" size="1.27" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="SHUTTER_FAULT" class="0">
 <segment>
+<pinref part="SHUTTER_SWITCH" gate="G$1" pin="1"/>
+<wire x1="-91.44" y1="124.46" x2="-88.9" y2="124.46" width="0.1524" layer="91"/>
+<label x="-88.9" y="124.46" size="1.27" layer="95" xref="yes"/>
+</segment>
+<segment>
 <pinref part="ADC2_FAULT" gate="G$1" pin="3"/>
-<portref moduleinst="BUFFER_OD1" port="A2"/>
-<wire x1="-17.78" y1="114.3" x2="0" y2="111.76" width="0.1524" layer="91"/>
-<label x="-10.16" y="114.3" size="1.27" layer="95" xref="yes"/>
+<wire x1="-25.4" y1="121.92" x2="-20.32" y2="121.92" width="0.1524" layer="91"/>
+<label x="-20.32" y="121.92" size="1.27" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="8V" class="0">
@@ -5423,13 +5455,13 @@ two pins?</text>
 </segment>
 <segment>
 <pinref part="ADC1_FAULT" gate="G$1" pin="1"/>
-<wire x1="-17.78" y1="134.62" x2="-15.24" y2="134.62" width="0.1524" layer="91"/>
-<label x="-15.24" y="134.62" size="1.27" layer="95" font="vector" xref="yes"/>
+<wire x1="-25.4" y1="139.7" x2="-22.86" y2="139.7" width="0.1524" layer="91"/>
+<label x="-22.86" y="139.7" size="1.27" layer="95" font="vector" xref="yes"/>
 </segment>
 <segment>
 <pinref part="ADC2_FAULT" gate="G$1" pin="1"/>
-<wire x1="-17.78" y1="119.38" x2="-15.24" y2="119.38" width="0.1524" layer="91"/>
-<label x="-15.24" y="119.38" size="1.27" layer="95" font="vector" xref="yes"/>
+<wire x1="-25.4" y1="127" x2="-22.86" y2="127" width="0.1524" layer="91"/>
+<label x="-22.86" y="127" size="1.27" layer="95" font="vector" xref="yes"/>
 </segment>
 </net>
 <net name="ENABLE1" class="0">
@@ -5557,6 +5589,11 @@ two pins?</text>
 <junction x="43.18" y="109.22"/>
 <label x="45.72" y="109.22" size="1.27" layer="95" xref="yes"/>
 </segment>
+<segment>
+<pinref part="OPEN_CLOSE_TOGGLE" gate="G$1" pin="1"/>
+<wire x1="-91.44" y1="104.14" x2="-86.36" y2="104.14" width="0.1524" layer="91"/>
+<label x="-86.36" y="104.14" size="1.27" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="DEWAR_DIFF_ENABLE" class="0">
 <segment>
@@ -5598,6 +5635,30 @@ two pins?</text>
 <pinref part="T1" gate="G$1" pin="B"/>
 <wire x1="320.04" y1="81.28" x2="317.5" y2="81.28" width="0.1524" layer="91"/>
 <pinref part="R8" gate="G$1" pin="1"/>
+</segment>
+</net>
+<net name="DEWAR_FAULT_TRIGGER" class="0">
+<segment>
+<pinref part="DEWAR_SWITCH" gate="G$1" pin="2"/>
+<wire x1="-91.44" y1="134.62" x2="-88.9" y2="134.62" width="0.1524" layer="91"/>
+<label x="-88.9" y="134.62" size="1.27" layer="95" xref="yes"/>
+</segment>
+<segment>
+<portref moduleinst="BUFFER_OD1" port="A1"/>
+<wire x1="0" y1="116.84" x2="-2.54" y2="116.84" width="0.1524" layer="91"/>
+<label x="-2.54" y="116.84" size="1.27" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="SHUTTER_FAULT_TRIGGER" class="0">
+<segment>
+<pinref part="SHUTTER_SWITCH" gate="G$1" pin="2"/>
+<wire x1="-91.44" y1="121.92" x2="-88.9" y2="121.92" width="0.1524" layer="91"/>
+<label x="-88.9" y="121.92" size="1.27" layer="95" xref="yes"/>
+</segment>
+<segment>
+<portref moduleinst="BUFFER_OD1" port="A2"/>
+<wire x1="0" y1="111.76" x2="-2.54" y2="111.76" width="0.1524" layer="91"/>
+<label x="-2.54" y="111.76" size="1.27" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 </nets>
