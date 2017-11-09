@@ -1,0 +1,65 @@
+Partlist exported from /Users/eraticus/Library/Mobile Documents/com~apple~CloudDocs/Safety-Shutter-Circuit/Shutter.sch at 11/8/17 4:27 PM
+
+Part                     Value                     Device                             Package                 Description                                   MF MPN         OC_FARNELL OC_NEWARK PROD_ID   
+ADC1                     M08                       M08                                OSTVN08                                                                                                             
+ADC1_FAULT               M03                       M03                                OSTVN03                                                                                                             
+ADC2                     M08                       M08                                OSTVN08                                                                                                             
+ADC2_FAULT               M03                       M03                                OSTVN03                                                                                                             
+BUFFER_OD1:04CAP         100n                      CAP805B                            0805_B                                                                                                              
+BUFFER_OD1:IC6           74AC04D                   74AC04D                            SO14                    Hex INVERTER                                                                                
+BUFFER_OD1:IC7           74ALS05D                  74ALS05D                           SO14                    Hex INVERTER, open collector                                                                
+BUFFER_OD1:O5CAP         100n                      CAP805B                            0805_B                                                                                                              
+C1                       1u                        CAP5MM                             CAP_CER_TDK_FK28_5MM    Ceramic Capacitor                                                                           
+C2                       1u                        CAP5MM                             CAP_CER_TDK_FK28_5MM    Ceramic Capacitor                                                                           
+C3                       1u                        CAP5MM                             CAP_CER_TDK_FK28_5MM    Ceramic Capacitor                                                                           
+C4                       1u                        CAP5MM                             CAP_CER_TDK_FK28_5MM    Ceramic Capacitor                                                                           
+C5                       100n                      CAP805B                            0805_B                                                                                                              
+C6                       100n                      CAP805B                            0805_B                                                                                                              
+C7                       100n                      CAP805B                            0805_B                                                                                                              
+C8                       100n                      CAP805B                            0805_B                                                                                                              
+C9                       100n                      CAP805B                            0805_B                                                                                                              
+C10                      100n                      CAP805B                            0805_B                                                                                                              
+C11                      100n                      CAP805B                            0805_B                                                                                                              
+C12                      100n                      CAP805B                            0805_B                                                                                                              
+C13                      100n                      CAP805B                            0805_B                                                                                                              
+C14                      100n                      CAP805B                            0805_B                                                                                                              
+C15                      100n                      CAP805B                            0805_B                                                                                                              
+C16                      1u                        CAP5MM                             CAP_CER_TDK_FK28_5MM    Ceramic Capacitor                                                                           
+C17                      10u                       CAP_POL8_3.5                       CAP_POL_8_3.5           Polarized Capacitor, such as Electrolytic                                                   
+C18                      1u                        CAP5MM                             CAP_CER_TDK_FK28_5MM    Ceramic Capacitor                                                                           
+C19                      100n                      CAP805B                            0805_B                                                                                                              
+CO[                      100n                      CAP805B                            0805_B                                                                                                              
+D1                       AM26C31                   AM26C31                            SOIC_16_NARROW          Quadruple Differential Line Driver                                                          
+D2                       AM26C31                   AM26C31                            SOIC_16_NARROW          Quadruple Differential Line Driver                                                          
+D3                       1N4004                    1N4004                             DO41-10                 DIODE                                                                                       
+DEWAR_SWITCH             M02                       M02                                OSTVN02                                                                                                             
+IC3                      MAX3222                   MAX3222                            DIL18                   RS232 TRANSCEIVER                                MAX3222EPN+ 1188044    99K3237             
+IC4                      74AC00D                   74AC00D                            SO14                    Quad 2-input NAND gate                                                                      
+J1                       ATMEL_PROGRAMMER_HEADERTH ATMEL_PROGRAMMER_HEADERTH          ATMEL_PROGRAMMER_HEADER Board connector for Atmel MkII ISP programmer                                               
+J2                                                 M06NO_SILK_FEMALE_PTH              1X06_NO_SILK            Header 6                                                                          CONN-08437
+MC7808                   7808T                     7808T                              TO220H                  Positive VOLTAGE REGULATOR                                                                  
+MC7812                   7812TV                    7812TV                             TO220V                  Positive VOLTAGE REGULATOR                                                                  
+OPEN_CLOSE_TOGGLE        M03                       M03                                OSTVN03                                                                                                             
+POWER                    M02                       M02                                OSTVN02                                                                                                             
+R1                       10K                       RESISTOR0805                       0805                                                                                                                
+R2                       100                       RESISTOR0805                       0805                                                                                                                
+R3                       100                       RESISTOR0805                       0805                                                                                                                
+R4                       10K                       RESISTOR0805                       0805                                                                                                                
+R5                       10K                       RESISTOR0805                       0805                                                                                                                
+R6                       10K                       RESISTOR0805                       0805                                                                                                                
+R7                       10K                       RESISTOR0805                       0805                                                                                                                
+R8                       1.6K                      RESISTOR0805                       0805                                                                                                                
+SHUTTER                  M02                       M02                                OSTVN02                                                                                                             
+SHUTTER_CLOSED_INDICATOR M02                       M02                                OSTVN02                                                                                                             
+SHUTTER_OPEN_INDICATOR   M02                       M02                                OSTVN02                                                                                                             
+SHUTTER_SWITCH           M02                       M02                                OSTVN02                                                                                                             
+T1                       TIP131                    TIP131                             TO220                   NPN BIPOLAR DARLINGTON TRANSISTOR                                                           
+U$1                      ATMEGA_32828PDIP          ATMEGA_32828PDIP                   DIP-28                                                                                                              
+U$2                      RESONATOR                 RESONATOR                          CSTCE                                                                                                               
+U$3                      TACTILE                   TACTILE                            CB315FP                                                                                                             
+U$4                      MO3                       MO3                                OSTVN03                                                                                                             
+U$5                      LTC1485DIP                LTC1485DIP                         DIP-8                                                                                                               
+U$6                      LTC1485DIP                LTC1485DIP                         DIP-8                                                                                                               
+U$7                      DPDTA_DP                  DPDTA_DP                           A_DP_STRAIGHT_BRACKET                                                                                               
+U1                                                 VOLTAGE_REGULATOR_LDOMCP1702_TO-92 TO-92                   MCP1702 3 terminal LDO                                                                      
+V1                       POWER_JACK                POWER_JACK                         PJ-102AH                Standard Power Jack with Switch                                                             
